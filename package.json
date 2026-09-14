@@ -7,34 +7,17 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "pm2": "pm2 start ecosystem.config.js --name AMAN-MD",
-    "stop": "pm2 stop AMAN-MD",
-    "restart": "pm2 restart AMAN-MD",
-    "logs": "pm2 logs AMAN-MD",
-    "kill": "pm2 kill"
+    "start": "node index.js"
   },
   "dependencies": {
     "@whiskeysockets/baileys": "^6.7.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "fs-extra": "^11.3.0",
+    "mongoose": "^8.0.0",
     "node-telegram-bot-api": "^0.66.0",
     "pino": "^9.6.0",
     "socket.io": "^4.8.1"
   },
-  "devDependencies": {
-    "nodemon": "^3.1.9",
-    "pm2": "^5.4.3"
-  },
-  "keywords": [
-    "whatsapp",
-    "bot",
-    "automation",
-    "wa",
-    "baileys",
-    "aman-md"
-  ],
   "author": "Aᴍᴀɴ TᴇᴄʜX 🏳️"
 }
