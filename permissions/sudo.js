@@ -1,5 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path');
+const { configuredNumberMatches, findParticipant, participantHasConfiguredNumber, phoneNumber } = require('./identity.js');
 
 const DATA_FILE = path.join(__dirname, '../data/bot_data.json');
 
@@ -7,23 +8,22 @@ function getSudoList() {
     try {
         if (fs.existsSync(DATA_FILE)) {
             const data = fs.readJsonSync(DATA_FILE);
-            return data.sudoJids || [];
+            return Array.isArray(data.sudoJids) ? data.sudoJids : [];
         }
-    } catch (e) {}
+    } catch (e) {
+        console.error('[Sudo] Could not read sudo list:', e.message);
+    }
     return [];
 }
 
-function isSudo(senderId) {
+async function isSudo(senderId, sock = null, chatId = null) {
     const sudoList = getSudoList();
     if (sudoList.length === 0) return false;
 
-    const senderClean = senderId.includes(':') ? senderId.split(':')[0] : (senderId.includes('@') ? senderId.split('@')[0] : senderId);
-    const senderNumber = senderClean.replace(/[^0-9]/g, '');
+    if (configuredNumberMatches(senderId, sudoList)) return true;
 
-    return sudoList.some(s => {
-        const sNum = s.replace(/[^0-9]/g, '');
-        return senderNumber === sNum || senderNumber.includes(sNum) || sNum.includes(senderNumber);
-    });
+    const participant = await findParticipant(sock, chatId, senderId);
+    return participantHasConfiguredNumber(participant, sudoList);
 }
 
 function addSudo(jid) {
@@ -32,8 +32,9 @@ function addSudo(jid) {
         if (fs.existsSync(DATA_FILE)) {
             data = fs.readJsonSync(DATA_FILE);
         }
-        if (!data.sudoJids) data.sudoJids = [];
-        const num = jid.replace(/[^0-9]/g, '');
+        if (!Array.isArray(data.sudoJids)) data.sudoJids = [];
+        const num = phoneNumber(jid);
+        if (!num) return false;
         if (!data.sudoJids.includes(num)) {
             data.sudoJids.push(num);
             fs.writeJsonSync(DATA_FILE, data);
@@ -49,14 +50,16 @@ function removeSudo(jid) {
     try {
         if (fs.existsSync(DATA_FILE)) {
             let data = fs.readJsonSync(DATA_FILE);
-            if (!data.sudoJids) data.sudoJids = [];
-            const num = jid.replace(/[^0-9]/g, '');
+            if (!Array.isArray(data.sudoJids)) data.sudoJids = [];
+            const num = phoneNumber(jid);
+            if (!num) return false;
+            const before = data.sudoJids.length;
             data.sudoJids = data.sudoJids.filter(s => {
-                const sNum = s.replace(/[^0-9]/g, '');
+                const sNum = phoneNumber(s);
                 return sNum !== num;
             });
             fs.writeJsonSync(DATA_FILE, data);
-            return true;
+            return data.sudoJids.length !== before;
         }
         return false;
     } catch (e) {

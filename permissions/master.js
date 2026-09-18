@@ -1,18 +1,14 @@
 const config = require('../config.js');
+const { configuredNumberMatches, findParticipant, participantHasConfiguredNumber } = require('./identity.js');
 
-function isMaster(senderId) {
+async function isMaster(senderId, sock = null, chatId = null) {
     const masterNumbers = config.master.numbers || [];
     const masterJids = config.master.jids || [];
 
-    const senderClean = senderId.includes(':') ? senderId.split(':')[0] : (senderId.includes('@') ? senderId.split('@')[0] : senderId);
-    const senderNumber = senderClean.replace(/[^0-9]/g, '');
+    if (masterJids.includes(senderId) || configuredNumberMatches(senderId, masterNumbers)) return true;
 
-    if (masterJids.includes(senderId)) return true;
-
-    return masterNumbers.some(m => {
-        const mNum = m.replace(/[^0-9]/g, '');
-        return senderNumber === mNum || senderNumber.includes(mNum) || mNum.includes(senderNumber);
-    });
+    const participant = await findParticipant(sock, chatId, senderId);
+    return participantHasConfiguredNumber(participant, [...masterNumbers, ...masterJids]);
 }
 
 function isMasterJid(senderId) {

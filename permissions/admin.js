@@ -1,5 +1,8 @@
 async function isAdmin(sock, chatId, senderId) {
     try {
+        if (!sock || typeof chatId !== 'string' || !chatId.endsWith('@g.us') || !senderId) {
+            return { isSenderAdmin: false, isBotAdmin: false };
+        }
         const metadata = await sock.groupMetadata(chatId);
         const participants = metadata.participants || [];
 
@@ -66,7 +69,7 @@ async function isAdmin(sock, chatId, senderId) {
 }
 
 async function isAdminOrOwner(sock, sender, chatId) {
-    if (!chatId.endsWith('@g.us')) return false;
+    if (typeof chatId !== 'string' || !chatId.endsWith('@g.us')) return false;
     try {
         const result = await isAdmin(sock, chatId, sender);
         return result.isSenderAdmin;

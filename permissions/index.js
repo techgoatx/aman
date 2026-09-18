@@ -4,7 +4,7 @@ const sudo = require('./sudo.js');
 const normal = require('./normal.js');
 const admin = require('./admin.js');
 
-async function checkPermission(sender, command, botMode, isMasterUser, isOwnerUser, isSudoUser, isAdminUser) {
+function checkPermission(sender, command, botMode, isMasterUser, isOwnerUser, isSudoUser, isAdminUser) {
     if (isMasterUser) {
         return { allowed: true, reason: 'Master' };
     }
@@ -45,17 +45,17 @@ async function checkPermission(sender, command, botMode, isMasterUser, isOwnerUs
 }
 
 async function getUserRole(sender, sock = null, chatId = null) {
-    if (master.isMaster(sender)) return '👑 Master';
+    if (await master.isMaster(sender, sock, chatId)) return '👑 Master';
     if (await owner.isOwner(sender, sock, chatId)) return '⭐ Owner';
-    if (sudo.isSudo(sender)) return '🔰 Sudo';
+    if (await sudo.isSudo(sender, sock, chatId)) return '🔰 Sudo';
     if (admin.isAdminUser(sender)) return '🛡️ Admin';
     return '👤 User';
 }
 
 async function getUserRoleEmoji(sender, sock = null, chatId = null) {
-    if (master.isMaster(sender)) return '👑';
+    if (await master.isMaster(sender, sock, chatId)) return '👑';
     if (await owner.isOwner(sender, sock, chatId)) return '⭐';
-    if (sudo.isSudo(sender)) return '🔰';
+    if (await sudo.isSudo(sender, sock, chatId)) return '🔰';
     if (admin.isAdminUser(sender)) return '🛡️';
     return '👤';
 }
