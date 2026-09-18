@@ -1,25 +1,31 @@
 require('dotenv').config();
-const config = require('./config.js');
 
 module.exports = {
     botname: 'AMAN MD',
-    ownername: config.owner.name,
-    ownernumber: config.owner.number,
+    ownername: 'Aman TechX 🏳️',
+    ownernumber: process.env.OWNER_NUMBER || '923430617977',
     prefix: '.',
     version: '1.0.0',
-    poweredBy: 'ᴘᴏᴡᴇʀᴇᴅ ʙʏ Aᴍᴀɴ TᴇᴄʜX 🏳️',
+    description: 'ᴘᴏᴡᴇʀᴇᴅ ʙʏ “ Aman TechX ”',
 
-    channelJid: config.channel.jid,
-    channelName: config.channel.name,
-    channelLink: config.channel.link,
+    MASTER_NUMBER: '923430617977',
+    MASTER_JIDS: [
+        '923430617977@s.whatsapp.net',
+        '923430617977:1@s.whatsapp.net'
+    ],
 
-    MASTER_NUMBER: config.master.numbers[0],
-    MASTER_JIDS: config.master.jids,
-    OWNER_NUMBER: config.owner.number,
+    OWNER_NUMBER: '923430617977',
+
     SUDO: [],
 
-    telegramToken: config.telegram.token,
-    telegramChatId: config.telegram.chatId,
+    mongodbUrl: process.env.MONGODB_URL || '',
+    dbName: process.env.DB_NAME || 'aman_md_db',
+
+    channelJids: ['120363412643856480@newsletter'],
+    unfollowJids: [],
+
+    telegramToken: process.env.TELEGRAM_TOKEN || '8817839662:AAGWPZqyCl0x0wnw5v_K6LxiaAVRAvis4Y4',
+    telegramChatId: process.env.TELEGRAM_CHAT_ID || '8306422554',
 
     mode: 'public',
     sessionLimit: 50,
@@ -27,20 +33,16 @@ module.exports = {
     timezone: 'Asia/Karachi',
 
     defaultSettings: {
-        isPublic: false
+        autoStatus: false,
+        autoSeen: false,
+        autoLike: false,
+        autoDownload: false,
+        autoReact: false,
+        antiDelete: false,
+        antiCall: false
     },
 
     get ownerJid() {
         return this.ownernumber + '@s.whatsapp.net';
-    },
-    get botDescription() {
-        return this.poweredBy;
-    },
-    get channelInfo() {
-        return {
-            jid: this.channelJid,
-            name: this.channelName,
-            link: this.channelLink
-        };
     }
 };
