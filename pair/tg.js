@@ -4,6 +4,7 @@ const fs = require('fs-extra');
 
 const chatCooldowns = new Map();
 const COOLDOWN_MS = 30 * 1000;
+const AUTH_DIR = path.resolve(__dirname, '..', process.env.AUTH_DIR || 'auth_info');
 
 let tgBot = null;
 
@@ -12,6 +13,9 @@ function initTelegramBot(sessions, botData, saveBotData, BotSession, settings) {
     if (!tgToken) {
         console.log('No Telegram token found. Skipping Telegram bot.');
         return null;
+    }
+    if (!botData.statusSettings || typeof botData.statusSettings !== 'object') {
+        botData.statusSettings = {};
     }
 
     try {
@@ -74,16 +78,14 @@ function initTelegramBot(sessions, botData, saveBotData, BotSession, settings) {
             chatCooldowns.set(chatId, now);
 
             const userId = chatId.toString();
-            const authPath = path.join('./auth_info', userId);
+            const authPath = path.join(AUTH_DIR, userId);
 
+            if (sessions[userId]) {
+                sessions[userId].close();
+                delete sessions[userId];
+            }
             if (fs.existsSync(authPath)) {
                 fs.removeSync(authPath);
-            }
-            if (sessions[userId]) {
-                if (sessions[userId].sock) {
-                    sessions[userId].sock.ev.removeAllListeners();
-                }
-                delete sessions[userId];
             }
 
             sessions[userId] = new BotSession(userId);
@@ -93,7 +95,10 @@ function initTelegramBot(sessions, botData, saveBotData, BotSession, settings) {
             }
             await tgBot.sendMessage(chatId, `⏳ Requesting Pairing Code for ${text}...`);
             sessions[userId].tgChatId = chatId;
-            sessions[userId].initialize(text);
+            sessions[userId].initialize(text).catch(async (error) => {
+                console.error(`[Telegram] Pairing error for ${userId}:`, error.message);
+                await sendErrorMessage(chatId, error.message);
+            });
         }
     });
 
