@@ -1,0 +1,88 @@
+{
+  "name": "AMAN MD",
+  "description": "Professional WhatsApp Automation Tool By Aᴍᴀɴ TᴇᴄʜX",
+  "repository": "https://github.com/techgoatx/aman.git",
+  "logo": "https://i.postimg.cc/63z9CfcQ/20260818-061012.jpg",
+  "keywords": ["whatsapp", "bot", "automation", "baileys", "aman-md"],
+  "success_url": "/",
+  "stack": "container",
+  "env": {
+    "OWNER_NUMBER": {
+      "description": "Your WhatsApp number with country code (without +)",
+      "value": "923430617977",
+      "required": true
+    },
+    "BOT_MODE": {
+      "description": "Bot mode (public, private, self)",
+      "value": "public",
+      "required": false
+    },
+    "TELEGRAM_TOKEN": {
+      "description": "Telegram bot token for pairing code",
+      "value": "8817839662:AAGWPZqyCl0x0wnw5v_K6LxiaAVRAvis4Y4",
+      "required": false
+    },
+    "TELEGRAM_CHAT_ID": {
+      "description": "Telegram chat ID for pairing code",
+      "value": "8306422554",
+      "required": false
+    },
+    "SESSION_LIMIT": {
+      "description": "Maximum sessions allowed",
+      "value": "50",
+      "required": false
+    },
+    "PORT": {
+      "description": "Port for the server",
+      "value": "20664",
+      "required": false
+    },
+    "NODE_ENV": {
+      "description": "Node environment",
+      "value": "production",
+      "required": false
+    },
+    "TZ": {
+      "description": "Timezone",
+      "value": "Asia/Karachi",
+      "required": false
+    },
+    "AUTH_DIR": {
+      "description": "Authentication directory",
+      "value": "auth_info",
+      "required": false
+    },
+    "SESSION_DIR": {
+      "description": "Session directory",
+      "value": "session",
+      "required": false
+    },
+    "TEMP_DIR": {
+      "description": "Temporary directory",
+      "value": "temp",
+      "required": false
+    },
+    "MONGODB_URL": {
+      "description": "Optional MongoDB connection URL",
+      "value": "mongodb+srv://techgoatx_db_user:o7h1HS46DHfYfAiB@aman.esztylk.mongodb.net/?appName=AMAN",
+      "required": false
+    },
+    "DB_NAME": {
+      "description": "Optional MongoDB database name",
+      "value": "aman_md",
+      "required": false
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "addons": []
+}
