@@ -6,7 +6,7 @@ cmd({
     category: 'master',
     description: '🧪 Tᴇsᴛ ᴄᴏᴍᴍᴀɴᴅ (Mᴀsᴛᴇʀ Oɴʟʏ)',
     react: '🧪',
-    type: 'owner',
+    type: 'master',
     secret: true
 }, async (sock, msg, args, context) => {
     try {
